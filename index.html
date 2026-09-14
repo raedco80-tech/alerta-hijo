@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Alerta de Emergencia - Contactar Familiar!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f44336;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        h1 { color: #d32f2f; font-size: 24px; margin-top: 0; }
+        p { font-size: 16px; line-height: 1.5; color: #555; }
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: #25D366;
+            color: white;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn:hover { background-color: #1ebe5d; }
+        #status { font-size: 14px; color: #666; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>⚠️ ¡NECESITO AYUDA!</h1>
+    <p>Esta persona tiene condición de autismo. Si está sola o desorientada, por favor comunícate de inmediato con su familiar presionando el botón de abajo.</p>
+    
+    <div id="status">Obteniendo ubicación exacta del GPS...</div>
+    
+    <a id="whatsappBtn" class="btn" href="#" style="display:none;">📲 Enviar mi ubicación por WhatsApp</a>
+</div>
+
+<script>
+    // ==========================================
+    // CONFIGURACIÓN: Modifica estos dos datos
+    // ==========================================
+    const telefonoPadre = "51997539121"; // Tu número con código de país (Ej: 51 para Perú seguido de tu celular)
+    const nombreHijo = "joshua cordova ortiz";        // El nombre de tu hijo para el mensaje
+    // ==========================================
+
+    function iniciarUbicacion() {
+        const statusEl = document.getElementById("status");
+        const btnEl = document.getElementById("whatsappBtn");
+
+        if (!navigator.geolocation) {
+            statusEl.innerText = "La geolocalización no es compatible con este navegador.";
+            btnEl.href = `https://wa.me/${telefonoPadre}?text=¡Hola! Encontré a ${nombreHijo} y necesito asistencia urgente.`;
+            btnEl.style.display = "block";
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const googleMapsUrl = `https://maps.google.com/?q=${lat},${lon}`;
+                
+                statusEl.innerText = "¡Ubicación exacta obtenida con éxito!";
+                btnEl.href = `https://wa.me/${telefonoPadre}?text=¡Hola! Encontré a ${nombreHijo}. Está en esta ubicación: ${googleMapsUrl}`;
+                btnEl.style.display = "block";
+            },
+            (error) => {
+                statusEl.innerText = "No se pudo obtener el GPS automático (permiso denegado). Aún puedes avisarme aquí:";
+                btnEl.href = `https://wa.me/${telefonoPadre}?text=¡Hola! Encontré a ${nombreHijo} y necesita asistencia.`;
+                btnEl.style.display = "block";
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    }
+
+    window.onload = iniciarUbicacion;
+</script>
+
+</body>
+</html>
