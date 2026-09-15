@@ -52,11 +52,25 @@
             font-size: 0.85rem;
             color: #856404;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
-        .audio-section audio {
-            width: 100%;
-            height: 40px;
+        .btn-voz {
+            background-color: #f0ad4e;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(240, 173, 78, 0.3);
+            transition: opacity 0.2s;
+        }
+        .btn-voz:active {
+            opacity: 0.85;
         }
         .content {
             padding: 20px;
@@ -149,13 +163,12 @@
         <span>⚠️ ALERTA DE EMERGENCIA</span>
     </div>
 
-    <!-- Reproductor de audio institucional -->
+    <!-- Reproductor de voz automática inteligente -->
     <div class="audio-section">
-        <p>🔊 MENSAJE DE VOZ INSTITUCIONAL</p>
-        <audio controls>
-            <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
-            Tu navegador no soporta el reproductor de audio.
-        </audio>
+        <p>🔊 ASISTENTE DE VOZ INSTITUCIONAL</p>
+        <button class="btn-voz" onclick="reproducirAlertaVoz()">
+            <span>▶️ Escuchar Mensaje de Emergencia</span>
+        </button>
     </div>
 
     <div class="content">
@@ -212,19 +225,37 @@
     const params = new URLSearchParams(window.location.search);
     
     const tel = params.get('tel') || '999999999';
-    const nombre = params.get('nombre') || 'Persona Protegida';
-    const sangre = params.get('sangre') || 'No especificado';
-    const condicion = params.get('condicion') || 'Ninguna';
-    const alergias = params.get('alergias') || 'Ninguna';
-    const notas = params.get('notas') || 'Sin notas adicionales.';
+    const nombre = decodeURIComponent(params.get('nombre') || 'Persona Protegida');
+    const sangre = decodeURIComponent(params.get('sangre') || 'No especificado');
+    const condicion = decodeURIComponent(params.get('condicion') || 'Ninguna');
+    const alergias = decodeURIComponent(params.get('alergias') || 'Ninguna');
+    const notas = decodeURIComponent(params.get('notas') || 'Sin notas adicionales.');
 
-    document.getElementById('nombre-usuario').innerText = decodeURIComponent(nombre);
-    document.getElementById('txt-sangre').innerText = decodeURIComponent(sangre);
-    document.getElementById('txt-condicion').innerText = decodeURIComponent(condicion);
-    document.getElementById('txt-alergias').innerText = decodeURIComponent(alergias);
-    document.getElementById('txt-notas').innerText = decodeURIComponent(notas);
+    document.getElementById('nombre-usuario').innerText = nombre;
+    document.getElementById('txt-sangre').innerText = sangre;
+    document.getElementById('txt-condicion').innerText = condicion;
+    document.getElementById('txt-alergias').innerText = alergias;
+    document.getElementById('txt-notas').innerText = notas;
 
     document.getElementById('btn-tel').href = `tel:${tel}`;
+
+    // Función que lee automáticamente todos los datos en voz alta
+    function reproducirAlertaVoz() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); // Detener cualquier audio anterior
+            
+            const textoMensaje = `Atención. Alerta de emergencia. Ha encontrado a ${nombre}. Condición médica: ${condicion}. Alergias: ${alergias}. Notas importantes: ${notas}. Por favor, mantenga la calma y comuníquese de inmediato con la familia usando los botones de llamada o WhatsApp.`;
+            
+            const utterance = new SpeechSynthesisUtterance(textoMensaje);
+            utterance.lang = 'es-ES'; // Idioma español
+            utterance.rate = 0.95;    // Velocidad calmada y clara
+            utterance.pitch = 1.0;
+            
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert("Tu navegador no soporta la reproducción de voz automática.");
+        }
+    }
 
     let ubicacionTexto = "Ubicación GPS no disponible.";
     
@@ -250,7 +281,7 @@
     }
 
     function actualizarBotonWhatsApp(linkUbicacion) {
-        const mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${decodeURIComponent(nombre)}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación actual aproximada: ${linkUbicacion}`;
+        const mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación actual aproximada: ${linkUbicacion}`;
         const urlWsp = `https://wa.me/51${tel}?text=${encodeURIComponent(mensaje)}`;
         document.getElementById('btn-wsp').href = urlWsp;
     }
