@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alerta de Emergencia - Identificación</title>
-    <!-- Fuente moderna y limpia -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -44,16 +43,20 @@
             gap: 10px;
         }
         .audio-section {
-            background: #fdf2f2;
-            padding: 12px 20px;
-            border-bottom: 1px solid #f2dede;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            background: #fff3cd;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ffeeba;
+            text-align: center;
+        }
+        .audio-section p {
+            font-size: 0.85rem;
+            color: #856404;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
         .audio-section audio {
             width: 100%;
-            height: 36px;
+            height: 40px;
         }
         .content {
             padding: 20px;
@@ -146,18 +149,18 @@
         <span>⚠️ ALERTA DE EMERGENCIA</span>
     </div>
 
-    <!-- Reproductor de audio institucional automático -->
+    <!-- Reproductor de audio institucional -->
     <div class="audio-section">
+        <p>🔊 MENSAJE DE VOZ INSTITUCIONAL</p>
         <audio controls>
             <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
-            Tu navegador no soporta audio.
+            Tu navegador no soporta el reproductor de audio.
         </audio>
     </div>
 
     <div class="content">
         <div class="name-title" id="nombre-usuario">Cargando datos...</div>
 
-        <!-- Ficha médica limpia e intuitiva -->
         <div class="info-group">
             <span class="info-icon">🩸</span>
             <div class="info-content">
@@ -190,7 +193,6 @@
             </div>
         </div>
 
-        <!-- Botones de Acción Directa -->
         <div class="actions">
             <a id="btn-wsp" href="#" class="btn btn-whatsapp">
                 <span>📲 Enviar WhatsApp con Ubicación</span>
@@ -207,7 +209,6 @@
 </div>
 
 <script>
-    // Capturar parámetros de la URL enviados desde el QR / Google Sheet
     const params = new URLSearchParams(window.location.search);
     
     const tel = params.get('tel') || '999999999';
@@ -217,17 +218,14 @@
     const alergias = params.get('alergias') || 'Ninguna';
     const notas = params.get('notas') || 'Sin notas adicionales.';
 
-    // Rellenar la tarjeta visualmente de forma automática
     document.getElementById('nombre-usuario').innerText = decodeURIComponent(nombre);
     document.getElementById('txt-sangre').innerText = decodeURIComponent(sangre);
     document.getElementById('txt-condicion').innerText = decodeURIComponent(condicion);
     document.getElementById('txt-alergias').innerText = decodeURIComponent(alergias);
     document.getElementById('txt-notas').innerText = decodeURIComponent(notas);
 
-    // Configurar enlace de llamada directa
     document.getElementById('btn-tel').href = `tel:${tel}`;
 
-    // Obtener GPS en segundo plano para el WhatsApp
     let ubicacionTexto = "Ubicación GPS no disponible.";
     
     if (navigator.geolocation) {
