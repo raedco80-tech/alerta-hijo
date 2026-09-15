@@ -216,7 +216,7 @@
         </div>
 
         <div class="gps-status" id="status-gps">
-            Obteniendo ubicación GPS de seguridad...
+            Obteniendo ubicación GPS de alta precisión...
         </div>
     </div>
 </div>
@@ -237,7 +237,7 @@
     document.getElementById('txt-alergias').innerText = alergias;
     document.getElementById('txt-notas').innerText = notas;
 
-    // Limpiar teléfono para llamadas directas
+    // Limpiar teléfono para llamadas directas internacionales
     const telLimpio = tel.replace(/\D/g, '');
     document.getElementById('btn-tel').href = `tel:${telLimpio}`;
 
@@ -267,7 +267,7 @@
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
                 ubicacionTexto = `https://maps.google.com/?q=${lat},${lon}`;
-                document.getElementById('status-gps').innerText = "📍 Ubicación GPS obtenida con éxito.";
+                document.getElementById('status-gps').innerText = "📍 Ubicación GPS de alta precisión obtenida.";
                 document.getElementById('status-gps').style.color = "#28a745";
                 actualizarBotonWhatsApp(ubicacionTexto);
             },
@@ -276,7 +276,11 @@
                 document.getElementById('status-gps').style.color = "#d9534f";
                 actualizarBotonWhatsApp("Ubicación denegada o no disponible.");
             },
-            { enableHighAccuracy: true, timeout: 10000 }
+            { 
+                enableHighAccuracy: true, 
+                timeout: 15000, 
+                maximumAge: 0 
+            }
         );
     } else {
         actualizarBotonWhatsApp("GPS no soportado en este dispositivo.");
