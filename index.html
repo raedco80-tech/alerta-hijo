@@ -224,7 +224,7 @@
 <script>
     const params = new URLSearchParams(window.location.search);
     
-    const tel = params.get('tel') || '999999999';
+    const tel = params.get('tel') || '';
     const nombre = decodeURIComponent(params.get('nombre') || 'Persona Protegida');
     const sangre = decodeURIComponent(params.get('sangre') || 'No especificado');
     const condicion = decodeURIComponent(params.get('condicion') || 'Ninguna');
@@ -237,18 +237,20 @@
     document.getElementById('txt-alergias').innerText = alergias;
     document.getElementById('txt-notas').innerText = notas;
 
-    document.getElementById('btn-tel').href = `tel:${tel}`;
+    // Limpiar teléfono para llamadas directas
+    const telLimpio = tel.replace(/\D/g, '');
+    document.getElementById('btn-tel').href = `tel:${telLimpio}`;
 
     // Función que lee automáticamente todos los datos en voz alta
     function reproducirAlertaVoz() {
         if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); // Detener cualquier audio anterior
+            window.speechSynthesis.cancel();
             
             const textoMensaje = `Atención. Alerta de emergencia. Ha encontrado a ${nombre}. Condición médica: ${condicion}. Alergias: ${alergias}. Notas importantes: ${notas}. Por favor, mantenga la calma y comuníquese de inmediato con la familia usando los botones de llamada o WhatsApp.`;
             
             const utterance = new SpeechSynthesisUtterance(textoMensaje);
-            utterance.lang = 'es-ES'; // Idioma español
-            utterance.rate = 0.95;    // Velocidad calmada y clara
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.95;
             utterance.pitch = 1.0;
             
             window.speechSynthesis.speak(utterance);
@@ -282,7 +284,8 @@
 
     function actualizarBotonWhatsApp(linkUbicacion) {
         const mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación actual aproximada: ${linkUbicacion}`;
-        const urlWsp = `https://wa.me/51${tel}?text=${encodeURIComponent(mensaje)}`;
+        const telWspLimpio = tel.replace(/\D/g, '');
+        const urlWsp = `https://wa.me/${telWspLimpio}?text=${encodeURIComponent(mensaje)}`;
         document.getElementById('btn-wsp').href = urlWsp;
     }
 </script>
