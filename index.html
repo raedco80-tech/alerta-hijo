@@ -3,23 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alerta de Emergencia</title>
+    <title>Alerta de Emergencia - Protección Infantil</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; text-align: center; padding: 20px; color: #333; }
-        .container { max-width: 400px; background: white; margin: 40px auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { color: #d9534f; }
-        p { font-size: 18px; margin: 20px 0; }
-        .btn { display: inline-block; background-color: #25d366; color: white; padding: 15px 25px; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 8px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn:hover { background-color: #1ebe5d; }
-        .loader { font-size: 14px; color: #666; margin-top: 10px; }
+        .container { max-width: 420px; background: white; margin: 30px auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        h2 { color: #d9534f; margin-bottom: 10px; }
+        p { font-size: 16px; margin: 15px 0; line-height: 1.5; }
+        .btn-whatsapp { display: inline-block; background-color: #25d366; color: white; padding: 14px 20px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 8px; margin-top: 15px; width: 85%; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .btn-whatsapp:hover { background-color: #1ebe5d; }
+        .btn-call { display: inline-block; background-color: #0275d8; color: white; padding: 14px 20px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 8px; margin-top: 10px; width: 85%; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .btn-call:hover { background-color: #025aa5; }
+        .loader { font-size: 13px; color: #666; margin-top: 8px; font-style: italic; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>⚠️ Alerta de Emergencia</h2>
-        <p id="mensajeInfo">Cargando datos y obteniendo ubicación...</p>
-        <div class="loader" id="estadoUbicacion">Buscando ubicación GPS...</div>
-        <a id="btnAlerta" href="#" class="btn" style="display:none;">📲 Enviar Alerta con Ubicación</a>
+        <p id="mensajeInfo">Cargando datos y verificando entorno...</p>
+        <div class="loader" id="estadoUbicacion">Obteniendo ubicación GPS del dispositivo...</div>
+        
+        <!-- Botón Principal: WhatsApp con Ubicación -->
+        <a id="btnAlerta" href="#" class="btn-whatsapp" style="display:none;">📲 Enviar WhatsApp con Ubicación</a>
+        
+        <!-- Botón Secundario: Llamada Telefónica Directa -->
+        <a id="btnLlamar" href="#" class="btn-call" style="display:none;">📞 Llamar por Teléfono Directamente</a>
     </div>
 
     <script>
@@ -30,12 +37,17 @@
         const mensajeInfo = document.getElementById('mensajeInfo');
         const estadoUbicacion = document.getElementById('estadoUbicacion');
         const btnAlerta = document.getElementById('btnAlerta');
+        const btnLlamar = document.getElementById('btnLlamar');
 
         if (telefono && nombre) {
             const nombreDecodificado = decodeURIComponent(nombre);
-            mensajeInfo.innerHTML = "Si has encontrado a <b>" + nombreDecodificado + "</b>, haz clic abajo para enviar la alerta y tu ubicación actual a su familia:";
+            mensajeInfo.innerHTML = "Si has encontrado a <b>" + nombreDecodificado + "</b>, utiliza los botones de abajo para comunicarte con su familia de inmediato:";
+            
+            // Asignar el enlace de llamada directa de inmediato
+            btnLlamar.href = "tel:" + telefono;
+            btnLlamar.style.display = "inline-block";
 
-            // Intentar obtener la ubicación GPS del celular que escanea
+            // Obtener ubicación GPS con alta fiabilidad
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
@@ -48,18 +60,18 @@
                         btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
                         btnAlerta.style.display = "inline-block";
                         estadoUbicacion.innerText = "¡Ubicación GPS obtenida con éxito!";
-                        estadoUbicacion.style.color = "green";
+                        estadoUbicacion.style.color = "#28a745";
                     },
                     function(error) {
-                        // Si el usuario rechaza el permiso de ubicación o falla, igual se envía la alerta sin coordenadas
-                        const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente. (No se pudo obtener la ubicación GPS automáticamente).";
+                        // Plan de respaldo si el usuario deniega la ubicación o falla el GPS
+                        const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente. (No se pudo capturar la ubicación GPS automática).";
                         
                         btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
                         btnAlerta.style.display = "inline-block";
-                        estadoUbicacion.innerText = "Aviso: La ubicación no fue compartida, pero puedes enviar la alerta.";
-                        estadoUbicacion.style.color = "orange";
+                        estadoUbicacion.innerText = "Aviso: Ubicación omitida por el navegador, pero puedes enviar la alerta.";
+                        estadoUbicacion.style.color = "#ffc107";
                     },
-                    { timeout: 10000 }
+                    { timeout: 10000, enableHighAccuracy: true }
                 );
             } else {
                 const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente.";
@@ -69,7 +81,7 @@
             }
 
         } else {
-            mensajeInfo.innerText = "Error: No se encontraron los datos de la alerta en este código QR.";
+            mensajeInfo.innerText = "Error crítico: Faltan los parámetros de identificación en este código QR.";
             estadoUbicacion.style.display = "none";
         }
     </script>
