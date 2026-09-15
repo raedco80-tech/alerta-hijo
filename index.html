@@ -11,36 +11,66 @@
         p { font-size: 18px; margin: 20px 0; }
         .btn { display: inline-block; background-color: #25d366; color: white; padding: 15px 25px; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 8px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn:hover { background-color: #1ebe5d; }
+        .loader { font-size: 14px; color: #666; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>⚠️ Alerta de Emergencia</h2>
-        <p id="mensajeInfo">Cargando datos...</p>
-        <a id="btnAlerta" href="#" class="btn" style="display:none;">📲 Llamar / Escribir por WhatsApp</a>
+        <p id="mensajeInfo">Cargando datos y obteniendo ubicación...</p>
+        <div class="loader" id="estadoUbicacion">Buscando ubicación GPS...</div>
+        <a id="btnAlerta" href="#" class="btn" style="display:none;">📲 Enviar Alerta con Ubicación</a>
     </div>
 
     <script>
-        // Leer los datos que vienen en el enlace (tel y nombre)
         const urlParams = new URLSearchParams(window.location.search);
         const telefono = urlParams.get('tel');
         const nombre = urlParams.get('nombre');
 
         const mensajeInfo = document.getElementById('mensajeInfo');
+        const estadoUbicacion = document.getElementById('estadoUbicacion');
         const btnAlerta = document.getElementById('btnAlerta');
 
         if (telefono && nombre) {
             const nombreDecodificado = decodeURIComponent(nombre);
-            mensajeInfo.innerHTML = "Si has encontrado a <b>" + nombreDecodificado + "</b>, por favor haz clic en el botón para avisar a su familia de inmediato:";
-            
-            // Texto automático para WhatsApp
-            const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente.";
-            
-            // Enlace directo a WhatsApp con el número dinámico de la hoja
-            btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
-            btnAlerta.style.display = "inline-block";
+            mensajeInfo.innerHTML = "Si has encontrado a <b>" + nombreDecodificado + "</b>, haz clic abajo para enviar la alerta y tu ubicación actual a su familia:";
+
+            // Intentar obtener la ubicación GPS del celular que escanea
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const linkUbicacion = "https://maps.google.com/?q=" + lat + "," + lon;
+                        
+                        const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente. Mi ubicación actual es: " + linkUbicacion;
+                        
+                        btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
+                        btnAlerta.style.display = "inline-block";
+                        estadoUbicacion.innerText = "¡Ubicación GPS obtenida con éxito!";
+                        estadoUbicacion.style.color = "green";
+                    },
+                    function(error) {
+                        // Si el usuario rechaza el permiso de ubicación o falla, igual se envía la alerta sin coordenadas
+                        const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente. (No se pudo obtener la ubicación GPS automáticamente).";
+                        
+                        btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
+                        btnAlerta.style.display = "inline-block";
+                        estadoUbicacion.innerText = "Aviso: La ubicación no fue compartida, pero puedes enviar la alerta.";
+                        estadoUbicacion.style.color = "orange";
+                    },
+                    { timeout: 10000 }
+                );
+            } else {
+                const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente.";
+                btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
+                btnAlerta.style.display = "inline-block";
+                estadoUbicacion.innerText = "";
+            }
+
         } else {
             mensajeInfo.innerText = "Error: No se encontraron los datos de la alerta en este código QR.";
+            estadoUbicacion.style.display = "none";
         }
     </script>
 </body>
