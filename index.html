@@ -3,87 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alerta de Emergencia - Protección Infantil</title>
+    <title>Alerta de Emergencia - Identificación</title>
+    <!-- Fuente moderna y limpia -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; text-align: center; padding: 20px; color: #333; }
-        .container { max-width: 420px; background: white; margin: 30px auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        h2 { color: #d9534f; margin-bottom: 10px; }
-        p { font-size: 16px; margin: 15px 0; line-height: 1.5; }
-        .btn-whatsapp { display: inline-block; background-color: #25d366; color: white; padding: 14px 20px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 8px; margin-top: 15px; width: 85%; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
-        .btn-whatsapp:hover { background-color: #1ebe5d; }
-        .btn-call { display: inline-block; background-color: #0275d8; color: white; padding: 14px 20px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 8px; margin-top: 10px; width: 85%; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
-        .btn-call:hover { background-color: #025aa5; }
-        .loader { font-size: 13px; color: #666; margin-top: 8px; font-style: italic; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #eaeaea;
+        }
+        .header-alert {
+            background: #d9534f;
+            color: white;
+            padding: 18px 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .audio-section {
+            background: #fdf2f2;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f2dede;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .audio-section audio {
+            width: 100%;
+            height: 36px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .name-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .info-group {
+            margin-bottom: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #fafafa;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border-left: 4px solid #0275d8;
+        }
+        .info-group.alert-border {
+            border-left-color: #d9534f;
+        }
+        .info-icon {
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+        .info-content label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #777;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .info-content span {
+            font-size: 0.95rem;
+            color: #222;
+            font-weight: 500;
+        }
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .btn:active {
+            opacity: 0.85;
+        }
+        .btn-whatsapp {
+            background-color: #25d366;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+        .btn-call {
+            background-color: #0275d8;
+            color: white;
+            box-shadow: 0 4px 12px rgba(2, 117, 216, 0.3);
+        }
+        .gps-status {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>⚠️ Alerta de Emergencia</h2>
-        <p id="mensajeInfo">Cargando datos y verificando entorno...</p>
-        <div class="loader" id="estadoUbicacion">Obteniendo ubicación GPS del dispositivo...</div>
-        
-        <!-- Botón Principal: WhatsApp con Ubicación -->
-        <a id="btnAlerta" href="#" class="btn-whatsapp" style="display:none;">📲 Enviar WhatsApp con Ubicación</a>
-        
-        <!-- Botón Secundario: Llamada Telefónica Directa -->
-        <a id="btnLlamar" href="#" class="btn-call" style="display:none;">📞 Llamar por Teléfono Directamente</a>
+
+<div class="card">
+    <div class="header-alert">
+        <span>⚠️ ALERTA DE EMERGENCIA</span>
     </div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const telefono = urlParams.get('tel');
-        const nombre = urlParams.get('nombre');
+    <!-- Reproductor de audio institucional automático -->
+    <div class="audio-section">
+        <audio controls>
+            <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+            Tu navegador no soporta audio.
+        </audio>
+    </div>
 
-        const mensajeInfo = document.getElementById('mensajeInfo');
-        const estadoUbicacion = document.getElementById('estadoUbicacion');
-        const btnAlerta = document.getElementById('btnAlerta');
-        const btnLlamar = document.getElementById('btnLlamar');
+    <div class="content">
+        <div class="name-title" id="nombre-usuario">Cargando datos...</div>
 
-        if (telefono && nombre) {
-            const nombreDecodificado = decodeURIComponent(nombre);
-            mensajeInfo.innerHTML = "Si has encontrado a <b>" + nombreDecodificado + "</b>, utiliza los botones de abajo para comunicarte con su familia de inmediato:";
-            
-            // Asignar el enlace de llamada directa de inmediato
-            btnLlamar.href = "tel:" + telefono;
-            btnLlamar.style.display = "inline-block";
+        <!-- Ficha médica limpia e intuitiva -->
+        <div class="info-group">
+            <span class="info-icon">🩸</span>
+            <div class="info-content">
+                <label>Grupo Sanguíneo</label>
+                <span id="txt-sangre">No especificado</span>
+            </div>
+        </div>
 
-            // Obtener ubicación GPS con alta fiabilidad
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        const linkUbicacion = "https://maps.google.com/?q=" + lat + "," + lon;
-                        
-                        const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente. Mi ubicación actual es: " + linkUbicacion;
-                        
-                        btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
-                        btnAlerta.style.display = "inline-block";
-                        estadoUbicacion.innerText = "¡Ubicación GPS obtenida con éxito!";
-                        estadoUbicacion.style.color = "#28a745";
-                    },
-                    function(error) {
-                        // Plan de respaldo si el usuario deniega la ubicación o falla el GPS
-                        const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente. (No se pudo capturar la ubicación GPS automática).";
-                        
-                        btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
-                        btnAlerta.style.display = "inline-block";
-                        estadoUbicacion.innerText = "Aviso: Ubicación omitida por el navegador, pero puedes enviar la alerta.";
-                        estadoUbicacion.style.color = "#ffc107";
-                    },
-                    { timeout: 10000, enableHighAccuracy: true }
-                );
-            } else {
-                const textoMensaje = "¡Hola! He encontrado a " + nombreDecodificado + " y necesita asistencia urgente.";
-                btnAlerta.href = "https://wa.me/" + telefono + "?text=" + encodeURIComponent(textoMensaje);
-                btnAlerta.style.display = "inline-block";
-                estadoUbicacion.innerText = "";
-            }
+        <div class="info-group alert-border">
+            <span class="info-icon">⚠️</span>
+            <div class="info-content">
+                <label>Condición Médica</label>
+                <span id="txt-condicion">Ninguna registrada</span>
+            </div>
+        </div>
 
-        } else {
-            mensajeInfo.innerText = "Error crítico: Faltan los parámetros de identificación en este código QR.";
-            estadoUbicacion.style.display = "none";
-        }
-    </script>
+        <div class="info-group alert-border">
+            <span class="info-icon">💊</span>
+            <div class="info-content">
+                <label>Alergias</label>
+                <span id="txt-alergias">Ninguna registrada</span>
+            </div>
+        </div>
+
+        <div class="info-group">
+            <span class="info-icon">📝</span>
+            <div class="info-content">
+                <label>Información Importante</label>
+                <span id="txt-notas">Mantener la calma, contactar a la familia.</span>
+            </div>
+        </div>
+
+        <!-- Botones de Acción Directa -->
+        <div class="actions">
+            <a id="btn-wsp" href="#" class="btn btn-whatsapp">
+                <span>📲 Enviar WhatsApp con Ubicación</span>
+            </a>
+            <a id="btn-tel" href="#" class="btn btn-call">
+                <span>📞 Llamar por Teléfono Directamente</span>
+            </a>
+        </div>
+
+        <div class="gps-status" id="status-gps">
+            Obteniendo ubicación GPS de seguridad...
+        </div>
+    </div>
+</div>
+
+<script>
+    // Capturar parámetros de la URL enviados desde el QR / Google Sheet
+    const params = new URLSearchParams(window.location.search);
+    
+    const tel = params.get('tel') || '999999999';
+    const nombre = params.get('nombre') || 'Persona Protegida';
+    const sangre = params.get('sangre') || 'No especificado';
+    const condicion = params.get('condicion') || 'Ninguna';
+    const alergias = params.get('alergias') || 'Ninguna';
+    const notas = params.get('notas') || 'Sin notas adicionales.';
+
+    // Rellenar la tarjeta visualmente de forma automática
+    document.getElementById('nombre-usuario').innerText = decodeURIComponent(nombre);
+    document.getElementById('txt-sangre').innerText = decodeURIComponent(sangre);
+    document.getElementById('txt-condicion').innerText = decodeURIComponent(condicion);
+    document.getElementById('txt-alergias').innerText = decodeURIComponent(alergias);
+    document.getElementById('txt-notas').innerText = decodeURIComponent(notas);
+
+    // Configurar enlace de llamada directa
+    document.getElementById('btn-tel').href = `tel:${tel}`;
+
+    // Obtener GPS en segundo plano para el WhatsApp
+    let ubicacionTexto = "Ubicación GPS no disponible.";
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                ubicacionTexto = `https://maps.google.com/?q=${lat},${lon}`;
+                document.getElementById('status-gps').innerText = "📍 Ubicación GPS obtenida con éxito.";
+                document.getElementById('status-gps').style.color = "#28a745";
+                actualizarBotonWhatsApp(ubicacionTexto);
+            },
+            (error) => {
+                document.getElementById('status-gps').innerText = "⚠️ No se pudo obtener GPS (Se enviará la alerta sin coordenadas).";
+                document.getElementById('status-gps').style.color = "#d9534f";
+                actualizarBotonWhatsApp("Ubicación denegada o no disponible.");
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    } else {
+        actualizarBotonWhatsApp("GPS no soportado en este dispositivo.");
+    }
+
+    function actualizarBotonWhatsApp(linkUbicacion) {
+        const mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${decodeURIComponent(nombre)}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación actual aproximada: ${linkUbicacion}`;
+        const urlWsp = `https://wa.me/51${tel}?text=${encodeURIComponent(mensaje)}`;
+        document.getElementById('btn-wsp').href = urlWsp;
+    }
+</script>
+
 </body>
 </html>
