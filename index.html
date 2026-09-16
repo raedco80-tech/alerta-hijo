@@ -88,7 +88,7 @@
             <p><strong>Notas:</strong> <span id="lbl-notas">-</span></p>
         </div>
 
-        <!-- Botón de voz manual (funciona garantizado en cualquier celular) -->
+        <!-- Botón de voz manual -->
         <button class="btn-voz" onclick="hablarDatos()">🔊 ESCUCHAR ALERTA EN VOZ</button>
 
         <!-- Botón de llamada rápida -->
@@ -118,14 +118,17 @@
 
         function hablarDatos() {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Detiene cualquier audio anterior
+                window.speechSynthesis.cancel();
                 const textoMensaje = `Atención. Alerta de emergencia para ${nombre}. Tipo de sangre ${sangre}. Condición médica: ${condicion}. Alergias: ${alergias}. Por favor comunicarse urgentemente al teléfono de contacto.`;
+                
                 const mensajeVoz = new SpeechSynthesisUtterance(textoMensaje);
                 mensajeVoz.lang = 'es-ES';
                 mensajeVoz.rate = 0.9;
+                
+                // Forzamos la reproducción
                 window.speechSynthesis.speak(mensajeVoz);
             } else {
-                alert("Tu dispositivo no soporta la reproducción de voz.");
+                alert("Tu navegador no soporta la función de voz.");
             }
         }
 
