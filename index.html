@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alerta de Emergencia</title>
+    <title>Alerta de Emergencia Médica</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+            background-color: #ffebee;
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,89 +18,72 @@
         }
         .card {
             background: #fff;
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(217,83,79,0.3);
             max-width: 400px;
             width: 100%;
             text-align: center;
+            border: 3px solid #d9534f;
         }
-        h2 { margin-top: 0; color: #d9534f; animation: parpadeo 1s infinite; }
-        @keyframes parpadeo {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
+        h2 { margin-top: 0; color: #d9534f; font-size: 24px; }
         .data-box {
             text-align: left;
-            background: #f9f9f9;
+            background: #fff5f5;
             padding: 15px;
             border-radius: 8px;
             margin: 15px 0;
-            border-left: 5px solid #d9534f;
+            border-left: 6px solid #d9534f;
         }
-        .data-box p { margin: 8px 0; font-size: 15px; }
-        .btn-llamada {
-            display: inline-block;
-            background-color: #28a745;
+        .data-box p { margin: 10px 0; font-size: 16px; }
+        .btn-principal {
+            display: block;
+            background-color: #d9534f;
             color: white;
-            padding: 12px 20px;
+            padding: 15px;
             text-decoration: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            margin-top: 10px;
-            width: 80%;
-        }
-        .btn-alarma {
-            background-color: #dc3545;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
             margin-top: 15px;
-            width: 90%;
-        }
-        .btn-gps {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
+            width: 100%;
+            box-sizing: border-box;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
-            width: 90%;
         }
-        #estado-gps { margin-top: 8px; font-size: 13px; color: #666; }
+        .btn-llamada { background-color: #28a745; }
+        .btn-gps { background-color: #007bff; }
+        #estado-gps { margin-top: 10px; font-size: 14px; color: #555; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="card">
+    <div class="card" id="pantalla-inicio">
         <h2>⚠️ ALERTA DE EMERGENCIA</h2>
-        <p>Información médica y de contacto vital:</p>
+        <p style="font-size: 16px; font-weight: bold;">Se ha escaneado una tarjeta médica.</p>
+        <p style="color: #666;">Toca el botón para ver los datos y **escuchar la alerta en voz alta**: 👇</p>
+        <button class="btn-principal" onclick="activarFichaYVoz()">🔊 ACTIVAR FICHA Y VOZ</button>
+    </div>
+
+    <div class="card" id="pantalla-datos" style="display: none;">
+        <h2>⚠️ FICHA DE EMERGENCIA</h2>
         
         <div class="data-box">
-            <p><strong>Nombre:</strong> <span id="lbl-nombre">Cargando...</span></p>
+            <p><strong>Nombre:</strong> <span id="lbl-nombre">-</span></p>
             <p><strong>Tipo de Sangre:</strong> <span id="lbl-sangre">-</span></p>
             <p><strong>Condición:</strong> <span id="lbl-condicion">-</span></p>
             <p><strong>Alergias:</strong> <span id="lbl-alergias">-</span></p>
             <p><strong>Notas:</strong> <span id="lbl-notas">-</span></p>
         </div>
 
-        <!-- Botón de alarma sonora garantizada -->
-        <button class="btn-alarma" onclick="sonarAlarma()">🚨 ACTIVAR ALARMA SONORA</button>
+        <!-- Botón para repetir la voz por si lo necesitan de nuevo -->
+        <button class="btn-principal" style="background-color: #ffc107; color: #333;" onclick="reproducirVoz()">🔁 Repetir Voz en Alta</button>
 
         <!-- Botón de llamada rápida -->
-        <a id="btn-llamar" href="#" class="btn-llamada">📞 LLAMAR A CONTACTO</a>
+        <a id="btn-llamar" href="#" class="btn-principal btn-llamada">📞 LLAMAR A CONTACTO URGENTE</a>
 
         <!-- Botón de Ubicación GPS Exacta -->
-        <button class="btn-gps" onclick="obtenerUbicacionGPS()">📍 Ver Ubicación GPS Exacta</button>
+        <button class="btn-principal btn-gps" onclick="obtenerUbicacionGPS()">📍 OBTENER UBICACIÓN GPS EXACTA</button>
         <p id="estado-gps"></p>
     </div>
 
@@ -121,38 +104,21 @@
         document.getElementById('lbl-notas').innerText = notas;
         document.getElementById('btn-llamar').href = `tel:${tel}`;
 
-        // Sistema de audio digital integrado (Beep de emergencia que suena en cualquier teléfono)
-        function sonarAlarma() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Hace sonar 3 bips de alerta fuertes
-                for (let i = 0; i < 3; i++) {
-                    setTimeout(() => {
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        
-                        osc.type = 'square';
-                        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Tono de alerta agudo
-                        
-                        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-                        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                        
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        
-                        osc.start();
-                        osc.stop(audioCtx.currentTime + 0.4);
-                    }, i * 500);
-                }
-
-                // Intenta hacer vibrar el teléfono si es compatible
-                if ("vibrate" in navigator) {
-                    navigator.vibrate([300, 100, 300, 100, 500]);
-                }
-            } catch(e) {
-                alert("Alerta de emergencia para: " + nombre + " - Tipo de sangre: " + sangre + " - Alergias: " + alergias);
+        function reproducirVoz() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const textoMensaje = `Atención. Alerta de emergencia médica para ${nombre}. Tipo de sangre ${sangre}. Condición médica: ${condicion}. Alergias: ${alergias}. Por favor comunicarse urgentemente al teléfono de contacto.`;
+                const mensajeVoz = new SpeechSynthesisUtterance(textoMensaje);
+                mensajeVoz.lang = 'es-ES';
+                mensajeVoz.rate = 0.9;
+                window.speechSynthesis.speak(mensajeVoz);
             }
+        }
+
+        function activarFichaYVoz() {
+            document.getElementById('pantalla-inicio').style.display = 'none';
+            document.getElementById('pantalla-datos').style.display = 'block';
+            reproducirVoz(); // Habla exactamente los datos de la persona
         }
 
         function obtenerUbicacionGPS() {
@@ -161,7 +127,7 @@
                 estadoGps.innerHTML = "❌ Tu navegador no soporta geolocalización.";
                 return;
             }
-            estadoGps.innerHTML = "⏳ Solicitando ubicación GPS...";
+            estadoGps.innerHTML = "⏳ Solicitando ubicación GPS exacta...";
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const lat = position.coords.latitude;
@@ -170,7 +136,7 @@
                     window.open(`https://www.google.com/maps?q=${lat},${lon}`, '_blank');
                 },
                 (error) => {
-                    estadoGps.innerHTML = "❌ No se pudo obtener el permiso de GPS.";
+                    estadoGps.innerHTML = "❌ Debes permitir el acceso a la ubicación.";
                 },
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
