@@ -85,7 +85,7 @@
     </div>
 
     <script>
-        // Capturar los datos enviados desde los parámetros de la URL del QR
+        // Capturar los parámetros de la URL
         const params = new URLSearchParams(window.location.search);
         
         const nombre = params.get('nombre') || 'No especificado';
@@ -95,13 +95,33 @@
         const alergias = params.get('alergias') || 'Ninguna';
         const notas = params.get('notas') || 'Ninguna';
 
-        // Inyectar los datos en la tarjeta visual
+        // Inyectar texto en la tarjeta
         document.getElementById('lbl-nombre').innerText = nombre;
         document.getElementById('lbl-sangre').innerText = sangre;
         document.getElementById('lbl-condicion').innerText = condicion;
         document.getElementById('lbl-alergias').innerText = alergias;
         document.getElementById('lbl-notas').innerText = notas;
         document.getElementById('btn-llamar').href = `tel:${tel}`;
+
+        // Función de lectura por voz automática (Sintetizador)
+        function hablarDatos() {
+            if ('speechSynthesis' in window) {
+                // Si la condición incluye "NO HABLANTE" o es una emergencia crítica, armamos el mensaje de voz
+                const textoMensaje = `Atención. Alerta de emergencia para ${nombre}. Tipo de sangre ${sangre}. Condición médica: ${condicion}. Alergias: ${alergias}. Por favor comunicarse urgentemente al teléfono de contacto.`;
+                
+                const mensajeVoz = new SpeechSynthesisUtterance(textoMensaje);
+                mensajeVoz.lang = 'es-ES';
+                mensajeVoz.rate = 0.9; // Velocidad clara y pausada
+                
+                // Pequeño retraso para que cargue visualmente primero la página
+                setTimeout(() => {
+                    window.speechSynthesis.speak(mensajeVoz);
+                }, 1000);
+            }
+        }
+
+        // Ejecutar la voz al cargar la página
+        window.onload = hablarDatos;
 
         // Función para activar el GPS del celular y abrir Google Maps
         function obtenerUbicacionGPS() {
@@ -121,7 +141,6 @@
                     
                     estadoGps.innerHTML = "✅ ¡Ubicación obtenida con éxito!";
                     
-                    // Abre automáticamente Google Maps con las coordenadas exactas del escaneo
                     const urlGoogleMaps = `https://www.google.com/maps?q=${lat},${lon}`;
                     window.open(urlGoogleMaps, '_blank');
                 },
