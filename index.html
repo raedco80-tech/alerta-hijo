@@ -65,13 +65,14 @@
         
         <div class="data-box">
             <p><strong>Nombre:</strong> <span id="lbl-nombre">Cargando...</span></p>
+            <p><strong>Tipo:</strong> <span id="lbl-tipo">-</span></p>
             <p><strong>Tipo de Sangre:</strong> <span id="lbl-sangre">-</span></p>
             <p><strong>Condición:</strong> <span id="lbl-condicion">-</span></p>
             <p><strong>Alergias:</strong> <span id="lbl-alergias">-</span></p>
             <p><strong>Notas:</strong> <span id="lbl-notas">-</span></p>
         </div>
 
-        <!-- Botón de voz obligatorio para los navegadores -->
+        <!-- Botón de voz obligatorio -->
         <button class="btn-principal btn-voz" onclick="reproducirVoz()">🔊 ESCUCHAR ALERTA EN VOZ</button>
 
         <!-- Botón de llamada rápida -->
@@ -86,6 +87,7 @@
         const params = new URLSearchParams(window.location.search);
         
         const nombre = params.get('nombre') || 'No especificado';
+        const tipo = params.get('tipo') || 'Persona';
         const tel = params.get('tel') || '#';
         const sangre = params.get('sangre') || 'No especificado';
         const condicion = params.get('condicion') || 'Ninguna';
@@ -93,6 +95,7 @@
         const notas = params.get('notas') || 'Ninguna';
 
         document.getElementById('lbl-nombre').innerText = nombre;
+        document.getElementById('lbl-tipo').innerText = tipo;
         document.getElementById('lbl-sangre').innerText = sangre;
         document.getElementById('lbl-condicion').innerText = condicion;
         document.getElementById('lbl-alergias').innerText = alergias;
@@ -102,7 +105,7 @@
         function reproducirVoz() {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const textoMensaje = `Atención. Alerta de emergencia médica para ${nombre}. Tipo de sangre ${sangre}. Condición médica: ${condicion}. Alergias: ${alergias}. Por favor comunicarse urgentemente al teléfono de contacto.`;
+                const textoMensaje = `Atención. Alerta de emergencia médica para ${tipo}, de nombre ${nombre}. Tipo de sangre ${sangre}. Condición médica: ${condicion}. Alergias: ${alergias}. Por favor comunicarse urgentemente al teléfono de contacto.`;
                 const mensajeVoz = new SpeechSynthesisUtterance(textoMensaje);
                 mensajeVoz.lang = 'es-ES';
                 mensajeVoz.rate = 0.9;
