@@ -27,6 +27,21 @@
             border: 3px solid #d9534f;
         }
         h2 { margin-top: 0; color: #d9534f; font-size: 24px; }
+        
+        /* Estilo elegante para destacar el Tipo en grande */
+        .badge-tipo {
+            display: inline-block;
+            background-color: #d9534f;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         .data-box {
             text-align: left;
             background: #fff5f5;
@@ -61,11 +76,14 @@
 
     <div class="card">
         <h2>⚠️ ALERTA DE EMERGENCIA</h2>
-        <p>Información médica y de contacto vital:</p>
+        
+        <!-- Aquí se muestra el Tipo en grande como un subtítulo ordenado -->
+        <div>
+            <span id="lbl-tipo" class="badge-tipo">CARGANDO...</span>
+        </div>
         
         <div class="data-box">
-            <p><strong>Nombre:</strong> <span id="lbl-nombre">Cargando...</span></p>
-            <p><strong>Tipo:</strong> <span id="lbl-tipo">-</span></p>
+            <p><strong>Nombre:</strong> <span id="lbl-nombre">-</span></p>
             <p><strong>Tipo de Sangre:</strong> <span id="lbl-sangre">-</span></p>
             <p><strong>Condición:</strong> <span id="lbl-condicion">-</span></p>
             <p><strong>Alergias:</strong> <span id="lbl-alergias">-</span></p>
@@ -82,7 +100,7 @@
         const params = new URLSearchParams(window.location.search);
         
         const nombre = params.get('nombre') || 'No especificado';
-        const tipo = params.get('tipo') || 'No especificado';
+        const tipo = params.get('tipo') || 'EMERGENCIA';
         const tel = params.get('tel') || '#';
         const sangre = params.get('sangre') || 'No especificado';
         const condicion = params.get('condicion') || 'Ninguna';
