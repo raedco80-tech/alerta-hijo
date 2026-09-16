@@ -159,8 +159,8 @@
 <body>
 
 <div class="card">
-    <div class="header-alert">
-        <span>⚠️ ALERTA DE EMERGENCIA</span>
+    <div class="header-alert" id="header-bg">
+        <span id="header-titulo">⚠️ ALERTA DE EMERGENCIA</span>
     </div>
 
     <!-- Reproductor de voz automática inteligente -->
@@ -174,18 +174,18 @@
     <div class="content">
         <div class="name-title" id="nombre-usuario">Cargando datos...</div>
 
-        <div class="info-group">
-            <span class="info-icon">🩸</span>
+        <div class="info-group" id="grupo-sangre">
+            <span class="info-icon" id="icon-sangre">🩸</span>
             <div class="info-content">
-                <label>Grupo Sanguíneo</label>
+                <label id="label-sangre">Grupo Sanguíneo</label>
                 <span id="txt-sangre">No especificado</span>
             </div>
         </div>
 
         <div class="info-group alert-border">
-            <span class="info-icon">⚠️</span>
+            <span class="info-icon" id="icon-condicion">⚠️</span>
             <div class="info-content">
-                <label>Condición Médica</label>
+                <label id="label-condicion">Condición Médica</label>
                 <span id="txt-condicion">Ninguna registrada</span>
             </div>
         </div>
@@ -193,7 +193,7 @@
         <div class="info-group alert-border">
             <span class="info-icon">💊</span>
             <div class="info-content">
-                <label>Alergias</label>
+                <label id="label-alergias">Alergias / Cuidados</label>
                 <span id="txt-alergias">Ninguna registrada</span>
             </div>
         </div>
@@ -224,12 +224,30 @@
 <script>
     const params = new URLSearchParams(window.location.search);
     
+    const tipo = decodeURIComponent(params.get('tipo') || 'Niño').toLowerCase();
     const tel = params.get('tel') || '';
     const nombre = decodeURIComponent(params.get('nombre') || 'Persona Protegida');
     const sangre = decodeURIComponent(params.get('sangre') || 'No especificado');
     const condicion = decodeURIComponent(params.get('condicion') || 'Ninguna');
     const alergias = decodeURIComponent(params.get('alergias') || 'Ninguna');
     const notas = decodeURIComponent(params.get('notas') || 'Sin notas adicionales.');
+
+    // Personalizar interfaz según el tipo (Niño, Adulto Mayor, Mascota)
+    if (tipo.includes('mascota')) {
+        document.getElementById('header-bg').style.background = '#e67e22'; // Naranja alerta mascota
+        document.getElementById('header-titulo').innerText = '🐾 ¡MASCOTA PERDIDA / EXTRAVIADA!';
+        document.getElementById('label-sangre').innerText = 'Raza / Especie';
+        document.getElementById('icon-sangre').innerText = '🐕';
+        document.getElementById('label-condicion').innerText = 'Temperamento / Comportamiento';
+        document.getElementById('label-alergias').innerText = 'Cuidados Especiales';
+    } else if (tipo.includes('adulto')) {
+        document.getElementById('header-bg').style.background = '#2c3e50'; // Azul sobrio adulto mayor
+        document.getElementById('header-titulo').innerText = '👴 ALERTA DE ADULTO MAYOR';
+        document.getElementById('label-condicion').innerText = 'Condición / Memoria / Salud';
+    } else {
+        // Por defecto: Niño / Joven
+        document.getElementById('header-titulo').innerText = '⚠️ ALERTA DE EMERGENCIA - MENOR';
+    }
 
     document.getElementById('nombre-usuario').innerText = nombre;
     document.getElementById('txt-sangre').innerText = sangre;
@@ -241,12 +259,19 @@
     const telLimpio = tel.replace(/\D/g, '');
     document.getElementById('btn-tel').href = `tel:${telLimpio}`;
 
-    // Función que lee automáticamente todos los datos en voz alta
+    // Función que lee automáticamente todos los datos en voz alta adaptada al tipo
     function reproducirAlertaVoz() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             
-            const textoMensaje = `Atención. Alerta de emergencia. Ha encontrado a ${nombre}. Condición médica: ${condicion}. Alergias: ${alergias}. Notas importantes: ${notas}. Por favor, mantenga la calma y comuníquese de inmediato con la familia usando los botones de llamada o WhatsApp.`;
+            let textoMensaje = "";
+            if (tipo.includes('mascota')) {
+                textoMensaje = `Atención. Mascota extraviada. Se busca a ${nombre}. Raza o especie: ${sangre}. Temperamento: ${condicion}. Cuidados especiales: ${alergias}. Notas adicionales: ${notas}. Por favor comuníquese de inmediato con su dueño usando el botón de llamada o WhatsApp.`;
+            } else if (tipo.includes('adulto')) {
+                textoMensaje = `Atención. Alerta de adulto mayor. Ha encontrado a ${nombre}. Condición de salud: ${condicion}. Alergias o medicamentos: ${alergias}. Notas importantes: ${notas}. Por favor mantenga la calma y comuníquese con la familia de inmediato.`;
+            } else {
+                textoMensaje = `Atención. Alerta de emergencia. Ha encontrado a ${nombre}. Condición médica: ${condicion}. Alergias: ${alergias}. Notas importantes: ${notas}. Por favor, mantenga la calma y comuníquese de inmediato con la familia.`;
+            }
             
             const utterance = new SpeechSynthesisUtterance(textoMensaje);
             utterance.lang = 'es-ES';
@@ -266,7 +291,6 @@
             (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                // Usar enlace de búsqueda directa de Google Maps para forzar precisión de chincheta
                 ubicacionTexto = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
                 document.getElementById('status-gps').innerText = "📍 ¡Ubicación GPS exacta fijada!";
                 document.getElementById('status-gps').style.color = "#28a745";
@@ -288,7 +312,13 @@
     }
 
     function actualizarBotonWhatsApp(linkUbicacion) {
-        const mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación exacta aquí:\n${linkUbicacion}`;
+        let mensaje = "";
+        if (tipo.includes('mascota')) {
+            mensaje = `🐾 ¡HE ENCONTRADO A TU MASCOTA!\nHola, he encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación exacta aquí:\n${linkUbicacion}`;
+        } else {
+            mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación exacta aquí:\n${linkUbicacion}`;
+        }
+        
         const telWspLimpio = tel.replace(/\D/g, '');
         const urlWsp = `https://wa.me/${telWspLimpio}?text=${encodeURIComponent(mensaje)}`;
         document.getElementById('btn-wsp').href = urlWsp;
