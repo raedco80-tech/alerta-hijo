@@ -72,13 +72,8 @@
             <p><strong>Notas:</strong> <span id="lbl-notas">-</span></p>
         </div>
 
-        <!-- Botón de voz obligatorio -->
         <button class="btn-principal btn-voz" onclick="reproducirVoz()">🔊 ESCUCHAR ALERTA EN VOZ</button>
-
-        <!-- Botón de llamada rápida -->
         <a id="btn-llamar" href="#" class="btn-principal btn-llamada">📞 LLAMAR A CONTACTO URGENTE</a>
-
-        <!-- Botón de Ubicación GPS Exacta -->
         <button class="btn-principal btn-gps" onclick="obtenerUbicacionGPS()">📍 OBTENER UBICACIÓN GPS EXACTA</button>
         <p id="estado-gps"></p>
     </div>
@@ -87,7 +82,7 @@
         const params = new URLSearchParams(window.location.search);
         
         const nombre = params.get('nombre') || 'No especificado';
-        const tipo = params.get('tipo') || 'Persona';
+        const tipo = params.get('tipo') || 'No especificado';
         const tel = params.get('tel') || '#';
         const sangre = params.get('sangre') || 'No especificado';
         const condicion = params.get('condicion') || 'Ninguna';
