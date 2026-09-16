@@ -79,10 +79,25 @@
             font-size: 1.4rem;
             font-weight: 700;
             color: #111;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             text-align: center;
-            border-bottom: 2px solid #f0f0f0;
+        }
+        /* Estilo para la etiqueta visible del tipo de perfil */
+        .tipo-badge {
+            text-align: center;
+            margin-bottom: 15px;
             padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .tipo-badge span {
+            background-color: #e2e8f0;
+            color: #334155;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .info-group {
             margin-bottom: 14px;
@@ -173,6 +188,9 @@
 
     <div class="content">
         <div class="name-title" id="nombre-usuario">Cargando datos...</div>
+        <div class="tipo-badge">
+            <span id="txt-tipo-badge">Perfil: Niño</span>
+        </div>
 
         <div class="info-group" id="grupo-sangre">
             <span class="info-icon" id="icon-sangre">🩸</span>
@@ -234,19 +252,26 @@
 
     // Personalizar interfaz según el tipo (Niño, Adulto Mayor, Mascota)
     if (tipo.includes('mascota')) {
-        document.getElementById('header-bg').style.background = '#e67e22'; // Naranja alerta mascota
+        document.getElementById('header-bg').style.background = '#e67e22'; // Naranja
         document.getElementById('header-titulo').innerText = '🐾 ¡MASCOTA PERDIDA / EXTRAVIADA!';
+        document.getElementById('txt-tipo-badge').innerText = '🐶 Perfil: Mascota';
+        document.getElementById('txt-tipo-badge').style.background = '#fef3c7';
+        document.getElementById('txt-tipo-badge').style.color = '#d97706';
         document.getElementById('label-sangre').innerText = 'Raza / Especie';
         document.getElementById('icon-sangre').innerText = '🐕';
         document.getElementById('label-condicion').innerText = 'Temperamento / Comportamiento';
         document.getElementById('label-alergias').innerText = 'Cuidados Especiales';
     } else if (tipo.includes('adulto')) {
-        document.getElementById('header-bg').style.background = '#2c3e50'; // Azul sobrio adulto mayor
+        document.getElementById('header-bg').style.background = '#2c3e50'; // Azul sobrio
         document.getElementById('header-titulo').innerText = '👴 ALERTA DE ADULTO MAYOR';
+        document.getElementById('txt-tipo-badge').innerText = '👴 Perfil: Adulto Mayor';
+        document.getElementById('txt-tipo-badge').style.background = '#e2e8f0';
+        document.getElementById('txt-tipo-badge').style.color = '#1e293b';
         document.getElementById('label-condicion').innerText = 'Condición / Memoria / Salud';
     } else {
         // Por defecto: Niño / Joven
         document.getElementById('header-titulo').innerText = '⚠️ ALERTA DE EMERGENCIA - MENOR';
+        document.getElementById('txt-tipo-badge').innerText = '👶 Perfil: Menor / Niño';
     }
 
     document.getElementById('nombre-usuario').innerText = nombre;
