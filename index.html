@@ -6,168 +6,27 @@
     <title>Alerta de Emergencia - Identificación</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-        }
-        .card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 420px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            border: 1px solid #eaeaea;
-        }
-        .header-alert {
-            background: #d9534f;
-            color: white;
-            padding: 18px 20px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .audio-section {
-            background: #fff3cd;
-            padding: 15px 20px;
-            border-bottom: 1px solid #ffeeba;
-            text-align: center;
-        }
-        .audio-section p {
-            font-size: 0.85rem;
-            color: #856404;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .btn-voz {
-            background-color: #f0ad4e;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 8px rgba(240, 173, 78, 0.3);
-            transition: opacity 0.2s;
-        }
-        .btn-voz:active {
-            opacity: 0.85;
-        }
-        .content {
-            padding: 20px;
-        }
-        .name-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #111;
-            margin-bottom: 5px;
-            text-align: center;
-        }
-        .tipo-badge {
-            text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .tipo-badge span {
-            background-color: #e2e8f0;
-            color: #334155;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .info-group {
-            margin-bottom: 14px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background: #fafafa;
-            padding: 10px 14px;
-            border-radius: 10px;
-            border-left: 4px solid #0275d8;
-        }
-        .info-group.alert-border {
-            border-left-color: #d9534f;
-        }
-        .info-icon {
-            font-size: 1.2rem;
-            margin-top: 2px;
-        }
-        .info-content label {
-            display: block;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: #777;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .info-content span {
-            font-size: 0.95rem;
-            color: #222;
-            font-weight: 500;
-        }
-        .actions {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-        .btn:active {
-            opacity: 0.85;
-        }
-        .btn-whatsapp {
-            background-color: #25d366;
-            color: white;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-        }
-        .btn-call {
-            background-color: #0275d8;
-            color: white;
-            box-shadow: 0 4px 12px rgba(2, 117, 216, 0.3);
-        }
-        .gps-status {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 15px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #f4f6f9; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+        .card { background: #ffffff; width: 100%; max-width: 420px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); overflow: hidden; border: 1px solid #eaeaea; }
+        .header-alert { background: #d9534f; color: white; padding: 18px 20px; text-align: center; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .audio-section { background: #fff3cd; padding: 15px 20px; border-bottom: 1px solid #ffeeba; text-align: center; }
+        .audio-section p { font-size: 0.85rem; color: #856404; font-weight: 600; margin-bottom: 10px; }
+        .btn-voz { background-color: #f0ad4e; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(240, 173, 78, 0.3); }
+        .content { padding: 20px; }
+        .name-title { font-size: 1.4rem; font-weight: 700; color: #111; margin-bottom: 5px; text-align: center; }
+        .tipo-badge { text-align: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+        .tipo-badge span { background-color: #e2e8f0; color: #334155; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+        .info-group { margin-bottom: 14px; display: flex; align-items: flex-start; gap: 12px; background: #fafafa; padding: 10px 14px; border-radius: 10px; border-left: 4px solid #0275d8; }
+        .info-group.alert-border { border-left-color: #d9534f; }
+        .info-icon { font-size: 1.2rem; margin-top: 2px; }
+        .info-content label { display: block; font-size: 0.75rem; text-transform: uppercase; color: #777; font-weight: 600; letter-spacing: 0.5px; }
+        .info-content span { font-size: 0.95rem; color: #222; font-weight: 500; }
+        .actions { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+        .btn-whatsapp { background-color: #25d366; color: white; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
+        .btn-call { background-color: #0275d8; color: white; box-shadow: 0 4px 12px rgba(2, 117, 216, 0.3); }
+        .gps-status { text-align: center; font-size: 0.8rem; color: #666; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -177,7 +36,6 @@
         <span id="header-titulo">⚠️ ALERTA DE EMERGENCIA</span>
     </div>
 
-    <!-- Reproductor de voz automática inteligente -->
     <div class="audio-section">
         <p>🔊 ASISTENTE DE VOZ INSTITUCIONAL</p>
         <button class="btn-voz" onclick="reproducirAlertaVoz()">
@@ -232,17 +90,14 @@
             </a>
         </div>
 
-        <div class="gps-status" id="status-gps">
-            Buscando satélites GPS de precisión...
-        </div>
+        <div class="gps-status" id="status-gps">Buscando satélites GPS de precisión...</div>
     </div>
 </div>
 
 <script>
     const params = new URLSearchParams(window.location.search);
     
-    // Captura de datos con validación para que nunca queden vacíos si la celda tiene texto
-    const tipo = decodeURIComponent(params.get('tipo') || 'niño').toLowerCase();
+    const tipo = decodeURIComponent(params.get('tipo') || '').toLowerCase();
     const tel = params.get('tel') || '';
     const nombre = decodeURIComponent(params.get('nombre') || 'Persona Protegida');
     const sangre = decodeURIComponent(params.get('sangre') || '');
@@ -250,9 +105,9 @@
     const alergias = decodeURIComponent(params.get('alergias') || '');
     const notas = decodeURIComponent(params.get('notas') || '');
 
-    // Configuración visual según el tipo detectado (Mascota, Adulto Mayor o Niño/Menor)
+    // Aplicar estilos según el tipo detectado
     if (tipo.includes('mascota') || tipo.includes('perro') || tipo.includes('gato')) {
-        document.getElementById('header-bg').style.background = '#e67e22'; // Naranja
+        document.getElementById('header-bg').style.background = '#e67e22';
         document.getElementById('header-titulo').innerText = '🐾 ¡MASCOTA PERDIDA / EXTRAVIADA!';
         document.getElementById('txt-tipo-badge').innerText = '🐶 Perfil: Mascota';
         document.getElementById('txt-tipo-badge').style.background = '#fef3c7';
@@ -262,7 +117,7 @@
         document.getElementById('label-condicion').innerText = 'Temperamento / Comportamiento';
         document.getElementById('label-alergias').innerText = 'Cuidados Especiales';
     } else if (tipo.includes('adulto') || tipo.includes('mayor')) {
-        document.getElementById('header-bg').style.background = '#2c3e50'; // Azul sobrio
+        document.getElementById('header-bg').style.background = '#2c3e50';
         document.getElementById('header-titulo').innerText = '👴 ALERTA DE ADULTO MAYOR';
         document.getElementById('txt-tipo-badge').innerText = '👴 Perfil: Adulto Mayor';
         document.getElementById('txt-tipo-badge').style.background = '#e2e8f0';
@@ -272,8 +127,7 @@
         document.getElementById('label-condicion').innerText = 'Condición / Memoria / Salud';
         document.getElementById('label-alergias').innerText = 'Medicamentos / Alergias';
     } else {
-        // Por defecto: Niño / Menor
-        document.getElementById('header-bg').style.background = '#d9534f'; // Rojo alerta
+        document.getElementById('header-bg').style.background = '#d9534f';
         document.getElementById('header-titulo').innerText = '⚠️ ALERTA DE EMERGENCIA - MENOR';
         document.getElementById('txt-tipo-badge').innerText = '👶 Perfil: Menor / Niño';
         document.getElementById('label-sangre').innerText = 'Grupo Sanguíneo';
@@ -282,59 +136,35 @@
         document.getElementById('label-alergias').innerText = 'Alergias';
     }
 
-    // Inyectar datos en pantalla (si están vacíos en la hoja, muestra un texto limpio por defecto)
     document.getElementById('nombre-usuario').innerText = nombre;
     document.getElementById('txt-sangre').innerText = sangre !== '' ? sangre : 'No especificado';
     document.getElementById('txt-condicion').innerText = condicion !== '' ? condicion : 'Ninguna registrada';
     document.getElementById('txt-alergias').innerText = alergias !== '' ? alergias : 'Ninguna registrada';
     document.getElementById('txt-notas').innerText = notas !== '' ? notas : 'Sin notas adicionales.';
 
-    // Limpiar teléfono para llamadas directas
     const telLimpio = tel.replace(/\D/g, '');
     document.getElementById('btn-tel').href = `tel:${telLimpio}`;
 
-    // Función de voz adaptada a cada perfil
     function reproducirAlertaVoz() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            
-            let textoMensaje = "";
-            if (tipo.includes('mascota') || tipo.includes('perro') || tipo.includes('gato')) {
-                textoMensaje = `Atención. Mascota extraviada. Se busca a ${nombre}. Raza o especie: ${sangre || 'no especificada'}. Temperamento: ${condicion || 'no especificado'}. Cuidados especiales: ${alergias || 'ninguno'}. Notas adicionales: ${notas || 'ninguna'}. Por favor comuníquese de inmediato con su dueño usando el botón de llamada o WhatsApp.`;
-            } else if (tipo.includes('adulto') || tipo.includes('mayor')) {
-                textoMensaje = `Atención. Alerta de adulto mayor. Ha encontrado a ${nombre}. Condición de salud o memoria: ${condicion || 'ninguna'}. Medicamentos o alergias: ${alergias || 'ninguno'}. Notas importantes: ${notas || 'ninguna'}. Por favor mantenga la calma y comuníquese con la familia de inmediato.`;
-            } else {
-                textoMensaje = `Atención. Alerta de emergencia. Ha encontrado a ${nombre}. Condición médica: ${condicion || 'ninguna'}. Alergias: ${alergias || 'ninguna'}. Notas importantes: ${notas || 'ninguna'}. Por favor, mantenga la calma y comuníquese de inmediato con la familia.`;
-            }
-            
+            let textoMensaje = `Atención. Alerta de emergencia para ${nombre}. Condición: ${condicion || 'ninguna'}. Alergias: ${alergias || 'ninguna'}. Notas: ${notas || 'ninguna'}. Por favor comuníquese de inmediato con la familia.`;
             const utterance = new SpeechSynthesisUtterance(textoMensaje);
             utterance.lang = 'es-ES';
-            utterance.rate = 0.95;
-            utterance.pitch = 1.0;
-            
             window.speechSynthesis.speak(utterance);
-        } else {
-            alert("Tu navegador no soporta la reproducción de voz.");
         }
     }
 
-    let ubicacionTexto = "Ubicación GPS no disponible.";
-    
+    let ubicacionTexto = "Ubicación no disponible.";
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                ubicacionTexto = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+            (pos) => {
+                ubicacionTexto = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
                 document.getElementById('status-gps').innerText = "📍 ¡Ubicación GPS exacta fijada!";
                 document.getElementById('status-gps').style.color = "#28a745";
                 actualizarBotonWhatsApp(ubicacionTexto);
             },
-            (error) => {
-                document.getElementById('status-gps').innerText = "⚠️ No se pudo obtener GPS.";
-                document.getElementById('status-gps').style.color = "#d9534f";
-                actualizarBotonWhatsApp("Ubicación no disponible.");
-            },
+            (err) => { actualizarBotonWhatsApp("Ubicación no disponible."); },
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
         );
     } else {
@@ -342,16 +172,10 @@
     }
 
     function actualizarBotonWhatsApp(linkUbicacion) {
-        let mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación exacta aquí:\n${linkUbicacion}`;
-        if (tipo.includes('mascota') || tipo.includes('perro') || tipo.includes('gato')) {
-            mensaje = `🐾 ¡HE ENCONTRADO A TU MASCOTA!\nHola, he encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación exacta aquí:\n${linkUbicacion}`;
-        }
-        
-        const telWspLimpio = tel.replace(/\D/g, '');
-        const urlWsp = `https://wa.me/${telWspLimpio}?text=${encodeURIComponent(mensaje)}`;
+        let mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación:\n${linkUbicacion}`;
+        const urlWsp = `https://wa.me/${tel.replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`;
         document.getElementById('btn-wsp').href = urlWsp;
     }
 </script>
-
 </body>
 </html>
