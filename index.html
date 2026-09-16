@@ -25,7 +25,12 @@
             width: 100%;
             text-align: center;
         }
-        h2 { margin-top: 0; color: #d9534f; }
+        h2 { margin-top: 0; color: #d9534f; animation: parpadeo 1s infinite; }
+        @keyframes parpadeo {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
         .data-box {
             text-align: left;
             background: #f9f9f9;
@@ -47,9 +52,9 @@
             margin-top: 10px;
             width: 80%;
         }
-        .btn-voz {
-            background-color: #ffc107;
-            color: #333;
+        .btn-alarma {
+            background-color: #dc3545;
+            color: white;
             padding: 12px 20px;
             border: none;
             border-radius: 8px;
@@ -88,8 +93,8 @@
             <p><strong>Notas:</strong> <span id="lbl-notas">-</span></p>
         </div>
 
-        <!-- Botón de voz manual -->
-        <button class="btn-voz" onclick="hablarDatos()">🔊 ESCUCHAR ALERTA EN VOZ</button>
+        <!-- Botón de alarma sonora garantizada -->
+        <button class="btn-alarma" onclick="sonarAlarma()">🚨 ACTIVAR ALARMA SONORA</button>
 
         <!-- Botón de llamada rápida -->
         <a id="btn-llamar" href="#" class="btn-llamada">📞 LLAMAR A CONTACTO</a>
@@ -116,19 +121,37 @@
         document.getElementById('lbl-notas').innerText = notas;
         document.getElementById('btn-llamar').href = `tel:${tel}`;
 
-        function hablarDatos() {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const textoMensaje = `Atención. Alerta de emergencia para ${nombre}. Tipo de sangre ${sangre}. Condición médica: ${condicion}. Alergias: ${alergias}. Por favor comunicarse urgentemente al teléfono de contacto.`;
+        // Sistema de audio digital integrado (Beep de emergencia que suena en cualquier teléfono)
+        function sonarAlarma() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 
-                const mensajeVoz = new SpeechSynthesisUtterance(textoMensaje);
-                mensajeVoz.lang = 'es-ES';
-                mensajeVoz.rate = 0.9;
-                
-                // Forzamos la reproducción
-                window.speechSynthesis.speak(mensajeVoz);
-            } else {
-                alert("Tu navegador no soporta la función de voz.");
+                // Hace sonar 3 bips de alerta fuertes
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        
+                        osc.type = 'square';
+                        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Tono de alerta agudo
+                        
+                        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                        
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.4);
+                    }, i * 500);
+                }
+
+                // Intenta hacer vibrar el teléfono si es compatible
+                if ("vibrate" in navigator) {
+                    navigator.vibrate([300, 100, 300, 100, 500]);
+                }
+            } catch(e) {
+                alert("Alerta de emergencia para: " + nombre + " - Tipo de sangre: " + sangre + " - Alergias: " + alergias);
             }
         }
 
