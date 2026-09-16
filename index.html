@@ -82,7 +82,6 @@
             margin-bottom: 5px;
             text-align: center;
         }
-        /* Estilo para la etiqueta visible del tipo de perfil */
         .tipo-badge {
             text-align: center;
             margin-bottom: 15px;
@@ -189,7 +188,7 @@
     <div class="content">
         <div class="name-title" id="nombre-usuario">Cargando datos...</div>
         <div class="tipo-badge">
-            <span id="txt-tipo-badge">Perfil: Niño</span>
+            <span id="txt-tipo-badge">Perfil</span>
         </div>
 
         <div class="info-group" id="grupo-sangre">
@@ -242,16 +241,17 @@
 <script>
     const params = new URLSearchParams(window.location.search);
     
-    const tipo = decodeURIComponent(params.get('tipo') || 'Niño').toLowerCase();
+    // Captura de datos con validación para que nunca queden vacíos si la celda tiene texto
+    const tipo = decodeURIComponent(params.get('tipo') || 'niño').toLowerCase();
     const tel = params.get('tel') || '';
     const nombre = decodeURIComponent(params.get('nombre') || 'Persona Protegida');
-    const sangre = decodeURIComponent(params.get('sangre') || 'No especificado');
-    const condicion = decodeURIComponent(params.get('condicion') || 'Ninguna');
-    const alergias = decodeURIComponent(params.get('alergias') || 'Ninguna');
-    const notas = decodeURIComponent(params.get('notas') || 'Sin notas adicionales.');
+    const sangre = decodeURIComponent(params.get('sangre') || '');
+    const condicion = decodeURIComponent(params.get('condicion') || '');
+    const alergias = decodeURIComponent(params.get('alergias') || '');
+    const notas = decodeURIComponent(params.get('notas') || '');
 
-    // Personalizar interfaz según el tipo (Niño, Adulto Mayor, Mascota)
-    if (tipo.includes('mascota')) {
+    // Configuración visual según el tipo detectado (Mascota, Adulto Mayor o Niño/Menor)
+    if (tipo.includes('mascota') || tipo.includes('perro') || tipo.includes('gato')) {
         document.getElementById('header-bg').style.background = '#e67e22'; // Naranja
         document.getElementById('header-titulo').innerText = '🐾 ¡MASCOTA PERDIDA / EXTRAVIADA!';
         document.getElementById('txt-tipo-badge').innerText = '🐶 Perfil: Mascota';
@@ -261,41 +261,50 @@
         document.getElementById('icon-sangre').innerText = '🐕';
         document.getElementById('label-condicion').innerText = 'Temperamento / Comportamiento';
         document.getElementById('label-alergias').innerText = 'Cuidados Especiales';
-    } else if (tipo.includes('adulto')) {
+    } else if (tipo.includes('adulto') || tipo.includes('mayor')) {
         document.getElementById('header-bg').style.background = '#2c3e50'; // Azul sobrio
         document.getElementById('header-titulo').innerText = '👴 ALERTA DE ADULTO MAYOR';
         document.getElementById('txt-tipo-badge').innerText = '👴 Perfil: Adulto Mayor';
         document.getElementById('txt-tipo-badge').style.background = '#e2e8f0';
         document.getElementById('txt-tipo-badge').style.color = '#1e293b';
+        document.getElementById('label-sangre').innerText = 'Grupo Sanguíneo';
+        document.getElementById('icon-sangre').innerText = '🩸';
         document.getElementById('label-condicion').innerText = 'Condición / Memoria / Salud';
+        document.getElementById('label-alergias').innerText = 'Medicamentos / Alergias';
     } else {
-        // Por defecto: Niño / Joven
+        // Por defecto: Niño / Menor
+        document.getElementById('header-bg').style.background = '#d9534f'; // Rojo alerta
         document.getElementById('header-titulo').innerText = '⚠️ ALERTA DE EMERGENCIA - MENOR';
         document.getElementById('txt-tipo-badge').innerText = '👶 Perfil: Menor / Niño';
+        document.getElementById('label-sangre').innerText = 'Grupo Sanguíneo';
+        document.getElementById('icon-sangre').innerText = '🩸';
+        document.getElementById('label-condicion').innerText = 'Condición Médica';
+        document.getElementById('label-alergias').innerText = 'Alergias';
     }
 
+    // Inyectar datos en pantalla (si están vacíos en la hoja, muestra un texto limpio por defecto)
     document.getElementById('nombre-usuario').innerText = nombre;
-    document.getElementById('txt-sangre').innerText = sangre;
-    document.getElementById('txt-condicion').innerText = condicion;
-    document.getElementById('txt-alergias').innerText = alergias;
-    document.getElementById('txt-notas').innerText = notas;
+    document.getElementById('txt-sangre').innerText = sangre !== '' ? sangre : 'No especificado';
+    document.getElementById('txt-condicion').innerText = condicion !== '' ? condicion : 'Ninguna registrada';
+    document.getElementById('txt-alergias').innerText = alergias !== '' ? alergias : 'Ninguna registrada';
+    document.getElementById('txt-notas').innerText = notas !== '' ? notas : 'Sin notas adicionales.';
 
-    // Limpiar teléfono para llamadas directas internacionales
+    // Limpiar teléfono para llamadas directas
     const telLimpio = tel.replace(/\D/g, '');
     document.getElementById('btn-tel').href = `tel:${telLimpio}`;
 
-    // Función que lee automáticamente todos los datos en voz alta adaptada al tipo
+    // Función de voz adaptada a cada perfil
     function reproducirAlertaVoz() {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             
             let textoMensaje = "";
-            if (tipo.includes('mascota')) {
-                textoMensaje = `Atención. Mascota extraviada. Se busca a ${nombre}. Raza o especie: ${sangre}. Temperamento: ${condicion}. Cuidados especiales: ${alergias}. Notas adicionales: ${notas}. Por favor comuníquese de inmediato con su dueño usando el botón de llamada o WhatsApp.`;
-            } else if (tipo.includes('adulto')) {
-                textoMensaje = `Atención. Alerta de adulto mayor. Ha encontrado a ${nombre}. Condición de salud: ${condicion}. Alergias o medicamentos: ${alergias}. Notas importantes: ${notas}. Por favor mantenga la calma y comuníquese con la familia de inmediato.`;
+            if (tipo.includes('mascota') || tipo.includes('perro') || tipo.includes('gato')) {
+                textoMensaje = `Atención. Mascota extraviada. Se busca a ${nombre}. Raza o especie: ${sangre || 'no especificada'}. Temperamento: ${condicion || 'no especificado'}. Cuidados especiales: ${alergias || 'ninguno'}. Notas adicionales: ${notas || 'ninguna'}. Por favor comuníquese de inmediato con su dueño usando el botón de llamada o WhatsApp.`;
+            } else if (tipo.includes('adulto') || tipo.includes('mayor')) {
+                textoMensaje = `Atención. Alerta de adulto mayor. Ha encontrado a ${nombre}. Condición de salud o memoria: ${condicion || 'ninguna'}. Medicamentos o alergias: ${alergias || 'ninguno'}. Notas importantes: ${notas || 'ninguna'}. Por favor mantenga la calma y comuníquese con la familia de inmediato.`;
             } else {
-                textoMensaje = `Atención. Alerta de emergencia. Ha encontrado a ${nombre}. Condición médica: ${condicion}. Alergias: ${alergias}. Notas importantes: ${notas}. Por favor, mantenga la calma y comuníquese de inmediato con la familia.`;
+                textoMensaje = `Atención. Alerta de emergencia. Ha encontrado a ${nombre}. Condición médica: ${condicion || 'ninguna'}. Alergias: ${alergias || 'ninguna'}. Notas importantes: ${notas || 'ninguna'}. Por favor, mantenga la calma y comuníquese de inmediato con la familia.`;
             }
             
             const utterance = new SpeechSynthesisUtterance(textoMensaje);
@@ -305,7 +314,7 @@
             
             window.speechSynthesis.speak(utterance);
         } else {
-            alert("Tu navegador no soporta la reproducción de voz automática.");
+            alert("Tu navegador no soporta la reproducción de voz.");
         }
     }
 
@@ -322,26 +331,20 @@
                 actualizarBotonWhatsApp(ubicacionTexto);
             },
             (error) => {
-                document.getElementById('status-gps').innerText = "⚠️ No se pudo obtener GPS (Se enviará la alerta sin coordenadas).";
+                document.getElementById('status-gps').innerText = "⚠️ No se pudo obtener GPS.";
                 document.getElementById('status-gps').style.color = "#d9534f";
-                actualizarBotonWhatsApp("Ubicación denegada o no disponible.");
+                actualizarBotonWhatsApp("Ubicación no disponible.");
             },
-            { 
-                enableHighAccuracy: true, 
-                timeout: 20000, 
-                maximumAge: 0 
-            }
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
         );
     } else {
-        actualizarBotonWhatsApp("GPS no soportado en este dispositivo.");
+        actualizarBotonWhatsApp("GPS no soportado.");
     }
 
     function actualizarBotonWhatsApp(linkUbicacion) {
-        let mensaje = "";
-        if (tipo.includes('mascota')) {
+        let mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación exacta aquí:\n${linkUbicacion}`;
+        if (tipo.includes('mascota') || tipo.includes('perro') || tipo.includes('gato')) {
             mensaje = `🐾 ¡HE ENCONTRADO A TU MASCOTA!\nHola, he encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación exacta aquí:\n${linkUbicacion}`;
-        } else {
-            mensaje = `🚨 ¡EMERGENCIA! He encontrado a ${nombre}. Por favor comuníquense conmigo urgente.\n\n📍 Ubicación exacta aquí:\n${linkUbicacion}`;
         }
         
         const telWspLimpio = tel.replace(/\D/g, '');
