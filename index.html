@@ -51,6 +51,7 @@
             border: none;
             cursor: pointer;
         }
+        .btn-voz { background-color: #ffc107; color: #333; }
         .btn-llamada { background-color: #28a745; }
         .btn-gps { background-color: #007bff; }
         #estado-gps { margin-top: 10px; font-size: 14px; color: #555; font-weight: bold; }
@@ -58,26 +59,20 @@
 </head>
 <body>
 
-    <div class="card" id="pantalla-inicio">
+    <div class="card">
         <h2>⚠️ ALERTA DE EMERGENCIA</h2>
-        <p style="font-size: 16px; font-weight: bold;">Se ha escaneado una tarjeta médica.</p>
-        <p style="color: #666;">Toca el botón para ver los datos y **escuchar la alerta en voz alta**: 👇</p>
-        <button class="btn-principal" onclick="activarFichaYVoz()">🔊 ACTIVAR FICHA Y VOZ</button>
-    </div>
-
-    <div class="card" id="pantalla-datos" style="display: none;">
-        <h2>⚠️ FICHA DE EMERGENCIA</h2>
+        <p>Información médica y de contacto vital:</p>
         
         <div class="data-box">
-            <p><strong>Nombre:</strong> <span id="lbl-nombre">-</span></p>
+            <p><strong>Nombre:</strong> <span id="lbl-nombre">Cargando...</span></p>
             <p><strong>Tipo de Sangre:</strong> <span id="lbl-sangre">-</span></p>
             <p><strong>Condición:</strong> <span id="lbl-condicion">-</span></p>
             <p><strong>Alergias:</strong> <span id="lbl-alergias">-</span></p>
             <p><strong>Notas:</strong> <span id="lbl-notas">-</span></p>
         </div>
 
-        <!-- Botón para repetir la voz por si lo necesitan de nuevo -->
-        <button class="btn-principal" style="background-color: #ffc107; color: #333;" onclick="reproducirVoz()">🔁 Repetir Voz en Alta</button>
+        <!-- Botón de voz obligatorio para los navegadores -->
+        <button class="btn-principal btn-voz" onclick="reproducirVoz()">🔊 ESCUCHAR ALERTA EN VOZ</button>
 
         <!-- Botón de llamada rápida -->
         <a id="btn-llamar" href="#" class="btn-principal btn-llamada">📞 LLAMAR A CONTACTO URGENTE</a>
@@ -112,13 +107,9 @@
                 mensajeVoz.lang = 'es-ES';
                 mensajeVoz.rate = 0.9;
                 window.speechSynthesis.speak(mensajeVoz);
+            } else {
+                alert("Tu dispositivo no soporta la función de voz.");
             }
-        }
-
-        function activarFichaYVoz() {
-            document.getElementById('pantalla-inicio').style.display = 'none';
-            document.getElementById('pantalla-datos').style.display = 'block';
-            reproducirVoz(); // Habla exactamente los datos de la persona
         }
 
         function obtenerUbicacionGPS() {
